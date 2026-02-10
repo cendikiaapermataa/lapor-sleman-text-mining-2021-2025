@@ -20,9 +20,12 @@ st.set_page_config(
 # ==========================================
 @st.cache_data
 def load_data():
+
+    data_path = "../Dataset/data_dashboard_sleman.csv"
+
     try:
         # Membaca file CSV hasil olahan Notebook
-        df = pd.read_csv('data_dashboard_sleman.csv')
+        df = pd.read_csv(data_path)
         
         # Pastikan kolom Tanggal dikenali sebagai format Tanggal
         df['Tanggal'] = pd.to_datetime(df['Tanggal'], errors='coerce')
