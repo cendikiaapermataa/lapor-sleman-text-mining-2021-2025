@@ -4,10 +4,8 @@ import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
+import os
 
-# ==========================================
-# 1. KONFIGURASI HALAMAN (Wajib Paling Atas)
-# ==========================================
 st.set_page_config(
     page_title="Sistem Analisis Lapor Sleman",
     page_icon="💻",
@@ -15,22 +13,17 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==========================================
-# 2. FUNGSI LOAD DATA
-# ==========================================
 @st.cache_data
 def load_data():
-
-    data_path = "../Dataset/data_dashboard_sleman.csv"
-
     try:
-        # Membaca file CSV hasil olahan Notebook
-        df = pd.read_csv(data_path)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
         
-        # Pastikan kolom Tanggal dikenali sebagai format Tanggal
+        file_path = os.path.join(current_dir, 'Dataset', 'data_dashboard_sleman.csv')
+
+        df = pd.read_csv(file_path)
+
         df['Tanggal'] = pd.to_datetime(df['Tanggal'], errors='coerce')
-        
-        # Ekstrak Tahun dan Bulan untuk keperluan filter
+
         df['Tahun'] = df['Tanggal'].dt.year
         df['Bulan'] = df['Tanggal'].dt.month_name()
         
@@ -38,21 +31,19 @@ def load_data():
     except FileNotFoundError:
         return None
 
-# Panggil fungsi load data
 df = load_data()
 
-# Cek apakah file ketemu
 if df is None:
     st.error("⚠️ File 'data_dashboard_sleman.csv' TIDAK DITEMUKAN!")
     st.warning("Pastikan file CSV hasil notebook dan file 'dashboard.py' ini ada di folder yang sama.")
     st.stop()
 
-# ==========================================
-# 3. SIDEBAR (NAVIGASI & FILTER)
-# ==========================================
+
 with st.sidebar:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    img_path = os.path.join(current_dir, 'images', 'logo kominfo.png')
     # --- Logo & Judul ---
-    st.image("https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo_Kabupaten_Sleman.png", width=80)
+    st.image(img_path, width=80)
     st.title("Lapor Sleman")
     st.write("Sistem Pendukung Keputusan")
     st.markdown("---")
